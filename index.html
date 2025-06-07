@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+    <h2 class="emp">Employee Directory</h2>
+    <div class="container">
+    <input type="text" placeholder="Name" id="myname" class="myname">
+    <input type="text" placeholder="Employee ID" id="myid" class="myid">
+    <input type="number" placeholder="Phone Number" id="myage" class="myage">
+    <input type="email" placeholder="Email" id="myemail" class="myemail">
+    <select id="alldept" class="alldept">
+    <option value="">Department</option>
+    <option value="Civil">Civil</option>
+    <option value="Mechanical">Mechanical</option>
+    <option value="Software">Software</option>
+    <option value="Others">Others</option>
+  </select>
+  <input type="url" placeholder="Enter image url" id="image">
+  <button id="addbtn">Add Employee</button>
+  
+</div>
+
+
+<div class="con">
+<h2 class="rec">EMPLOYEE RECORDS</h2>   
+<input type="text" placeholder="Search for employee" class="searchname" id="searchname">
+<button id="searchbtn" class="searchbtn"><i class="fa-solid fa-magnifying-glass" id="searchbtn"></i></button>
+ <select id="fildep">
+    <option value="">Department</option>
+    <option value="Civil">Civil</option>
+    <option value="Mechanical">Mechanical</option>
+    <option value="Software">Software</option>
+    <option value="Others">Others</option>
+   </select>
+<button id="resetbtn">Reset</button>
+</div>
+
+  <div id="dynamic" class="card-container">
+    
+    
+</div>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getDatabase, ref, set, remove, onValue,push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDrrVCXJkcWoDfSRkWVHbfdTjwoGXh0YDE",
+    authDomain: "monkey-0304.firebaseapp.com",
+    databaseURL: "https://monkey-0304-default-rtdb.firebaseio.com",
+    projectId: "monkey-0304",
+    storageBucket: "monkey-0304.firebasestorage.app",
+    messagingSenderId: "295092412481",
+    appId: "1:295092412481:web:bcac9b535821ab7e8166c0"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const databasename = getDatabase(app)
+  const collname = ref(databasename, "madhu")
+
+  let mynamecall = document.getElementById("myname")
+  let myagecall = document.getElementById("myage")
+  let myemailcall = document.getElementById("myemail")
+  let myidcall = document.getElementById("myid")  
+  let addbtncall = document.getElementById("addbtn")
+  let dynamiccall = document.getElementById("dynamic")
+  let resetbtncall = document.getElementById("resetbtn")
+  let alldeptcall = document.getElementById("alldept")
+  let filterdep = document.getElementById("fildep")
+  let searchnamecall =  document.getElementById("searchname")
+  let searchbtncall = document.getElementById("searchbtn")
+  let image = document.getElementById("image")
+  let edibn = null
+
+resetbtncall.addEventListener("click", () => {
+    remove(ref(databasename, "madhu"))
+    dynamiccall.innerHTML = ""; 
+})
+  addbtncall.addEventListener("click", ()=>{
+    let smallname = myname.value.toLowerCase().trim()
+    let smallmyid = myid.value.toUpperCase().trim()
+    let smallage= myage.value.trim()
+    let smallemail = myemail.value.toLowerCase().trim()
+    let smalldept = alldept.value.trim()
+    let smallimage = image.value.trim()
+
+    
+
+    const formatdb = {
+      dbname : smallname,
+      did : smallmyid,
+      dbage : smallage,
+      dbmail : smallemail,
+      dbdept : smalldept,
+      dbimage : smallimage
+    }
+
+if((myname.value == '' || myname.value == undefined) || (myid.value == '' || myid.value == undefined) || (myage.value == '' || myage.value == undefined) || (myemail.value == '' || myemail.value == undefined) || (image.value == '' || image.value == undefined) || (alldept.value == '' || alldept.value == undefined) ){
+  Swal.fire({
+  title: "Fill all Details",
+  icon: "info",
+  draggable: true
+});
+}
+else{
+    if(edibn){
+      set(ref(databasename, `madhu/${edibn}`),formatdb)
+      clearfunction()
+      Swal.fire({
+  title: "Employee Updated!",
+  icon: "success",
+  confirmButtonText: "Done"
+});
+
+    }
+    else{
+      push(collname,formatdb)
+      clearfunction()
+      Swal.fire({
+  title: "Employee Added!",
+  icon: "success",
+  confirmButtonText: "OK"
+});
+
+    }}
+
+function clearfunction(){
+  myname.value = ''
+  myid.value = ''
+  myage.value = ''
+  myemail.value= ''
+  alldept.value = ''
+  image.value = ''
+}
+})
+
+onValue(collname, function name(snapshot) {
+  if (snapshot.exists()) {
+    const seperatetag = Object.entries(snapshot.val());
+    dynamiccall.innerHTML = '';
+
+    seperatetag.forEach(element => {
+      const dbid = element[0];
+      const dbdata = element[1];
+
+      dynamiccall.innerHTML += `
+      
+        <div class="employee-card">
+          <td><img src="${dbdata.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
+            <td><h3 class = "pername">${dbdata.dbname}</h3></td>
+            <td><p class = "perid">${dbdata.did}</p></td>
+            <div class="con3">
+            <td><h4 class = "percon">Contact :</h4></td>
+            <td><p class = "percon2">${dbdata.dbage}</p></td></div>
+            <div class="con3">
+            <td><h4 class = "peremail">Email :</h4></td>
+            <td><p class = "peremail1">${dbdata.dbmail}</p></td></div>
+            <div class="con3">
+            <td><h4 class = "perdept">Department :</h4></td>
+            <td><p class = "perdept1">${dbdata.dbdept}</p></td></div>
+            <td><button data-id="${dbid}" class="editbtn">Edit</button></td>
+            <td><button data-id="${dbid}" class="deletebtn">Delete</button></td>
+        </div> `;
+        
+    });
+  }
+});
+
+document.addEventListener("click", (e)=>{
+    if(e.target.classList.contains("editbtn")){
+        const getting = e.target.dataset.id
+        edibn = getting
+        const card = e.target.closest(".employee-card")
+        myname.value = card.querySelector("h3").innerText;
+    myid.value = card.querySelectorAll("p")[0].innerText;
+    myage.value = card.querySelectorAll("p")[1].innerText;
+    myemail.value = card.querySelectorAll("p")[2].innerText;
+    alldept.value = card.querySelectorAll("p")[3].innerText;
+    image.value = card.querySelector("img").getAttribute("src");
+    }
+    else if(e.target.classList.contains("deletebtn")){
+      const getting = e.target.dataset.id
+      Swal.fire({
+  title: "Are you sure?",
+  text: "You won't be able to revert this!",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes, delete it!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    remove(ref(databasename, `madhu/${getting}`))
+    Swal.fire({
+      title: "Deleted!",
+      text: "Your file has been deleted.",
+      icon: "success"
+    });
+  }
+});
+  
+    }
+})
+
+
+
+filterdep.addEventListener("change", ()=>{
+let selected = filterdep.value
+onValue(collname,(snapshot)=>{
+    if (snapshot.exists()){
+        const dataentries = Object.entries(snapshot.val())
+        dynamiccall.innerHTML = ''
+        dataentries.forEach(([id, data]) => {
+            if(selected ==='' || data.dbdept === selected){
+                dynamiccall.innerHTML += `
+      
+        <div class="employee-card">
+          <td><img src="${data.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
+            <td><h3 class = "pername">${data.dbname}</h3></td>
+            <td><p class = "perid">${data.did}</p></td>
+            <div class="con3">
+            <td><h4 class = "percon">Contact :</h4></td>
+            <td><p class = "percon2">${data.dbage}</p></td></div>
+            <div class="con3">
+            <td><h4 class = "peremail">Email :</h4></td>
+            <td><p class = "peremail1">${data.dbmail}</p></td></div>
+            <div class="con3">
+            <td><h4 class = "perdept">Department :</h4></td>
+            <td><p class = "perdept1">${data.dbdept}</p></td></div>
+            <td><button data-id="${id}" class="editbtn">Edit</button></td>
+            <td><button data-id="${id}" class="deletebtn">Delete</button></td>
+        </div> `;
+            }
+        });
+    }
+})
+})
+
+searchbtncall.addEventListener("click", ()=>{
+    let searchin = searchnamecall.value.toLowerCase().trim()
+onValue(collname, (snapshot)=>{
+    if(snapshot.exists()){
+        const dataen = Object.entries(snapshot.val())
+        dynamiccall.innerHTML=''
+        dataen.forEach(([id, data]) => {
+            if(data.dbname.includes(searchin)){
+                dynamiccall.innerHTML += `
+      
+        <div class="employee-card">
+          <td><img src="${data.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
+            <td><h3 class = "pername">${data.dbname}</h3></td>
+            <td><p class = "perid">${data.did}</p></td>
+            <div class="con3">
+            <td><h4 class = "percon">Contact :</h4></td>
+            <td><p class = "percon2">${data.dbage}</p></td></div>
+            <div class="con3">
+            <td><h4 class = "peremail">Email :</h4></td>
+            <td><p class = "peremail1">${data.dbmail}</p></td></div>
+            <div class="con3">
+            <td><h4 class = "perdept">Department :</h4></td>
+            <td><p class = "perdept1">${data.dbdept}</p></td></div>
+            <td><button data-id="${id}" class="editbtn">Edit</button></td>
+            <td><button data-id="${id}" class="deletebtn">Delete</button></td>
+        </div> `;
+            }
+        });
+    }
+});
+});
+
+
+
+
+</script>
+
+</body>
+</html>
