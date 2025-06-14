@@ -160,7 +160,7 @@ onValue(collname, function name(snapshot) {
       
         <div class="employee-card">
           <td><img src="${dbdata.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
-            <td><h3 class = "pername">${dbdata.dbname}</h3></td>
+            <td><h3 class = "pername">${dbdata.dbname..toUpperCase()}</h3></td>
             <td><p class = "perid">${dbdata.did}</p></td>
             <div class="con3">
             <td><h4 class = "percon">Contact :</h4></td>
@@ -229,7 +229,7 @@ onValue(collname,(snapshot)=>{
       
         <div class="employee-card">
           <td><img src="${data.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
-            <td><h3 class = "pername">${data.dbname}</h3></td>
+            <td><h3 class = "pername">${data.dbname.toUpperCase()}</h3></td>
             <td><p class = "perid">${data.did}</p></td>
             <div class="con3">
             <td><h4 class = "percon">Contact :</h4></td>
@@ -261,7 +261,7 @@ onValue(collname, (snapshot)=>{
       
         <div class="employee-card">
           <td><img src="${data.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
-            <td><h3 class = "pername">${data.dbname}</h3></td>
+            <td><h3 class = "pername">${data.dbname.toUpperCase()}</h3></td>
             <td><p class = "perid">${data.did}</p></td>
             <div class="con3">
             <td><h4 class = "percon">Contact :</h4></td>
