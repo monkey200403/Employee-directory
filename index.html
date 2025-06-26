@@ -47,27 +47,26 @@
     
     
 </div>
-
 <script type="module">
   // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getDatabase, ref, set, remove, onValue,push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getDatabase, set, push, onValue, remove, ref } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyDrrVCXJkcWoDfSRkWVHbfdTjwoGXh0YDE",
-    authDomain: "monkey-0304.firebaseapp.com",
-    databaseURL: "https://monkey-0304-default-rtdb.firebaseio.com",
-    projectId: "monkey-0304",
-    storageBucket: "monkey-0304.firebasestorage.app",
-    messagingSenderId: "295092412481",
-    appId: "1:295092412481:web:bcac9b535821ab7e8166c0"
+    apiKey: "AIzaSyC8IHJfz7O4eyGhbDXVN_Q4SdlhCWhMR4w",
+    authDomain: "employee-acdc6.firebaseapp.com",
+    projectId: "employee-acdc6",
+    storageBucket: "employee-acdc6.firebasestorage.app",
+    messagingSenderId: "438536494681",
+    appId: "1:438536494681:web:bd3ddfce2edd994517db48"
   };
 
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
+ const app = initializeApp(firebaseConfig);
   const databasename = getDatabase(app)
   const collname = ref(databasename, "madhu")
 
@@ -160,7 +159,7 @@ onValue(collname, function name(snapshot) {
       
         <div class="employee-card">
           <td><img src="${dbdata.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
-            <td><h3 class = "pername">${dbdata.dbname..toUpperCase()}</h3></td>
+            <td><h3 class = "pername">${dbdata.dbname.toUpperCase()}</h3></td>
             <td><p class = "perid">${dbdata.did}</p></td>
             <div class="con3">
             <td><h4 class = "percon">Contact :</h4></td>
@@ -229,7 +228,7 @@ onValue(collname,(snapshot)=>{
       
         <div class="employee-card">
           <td><img src="${data.dbimage}" alt="image" width=80px height=80px class = "personim"></td>
-            <td><h3 class = "pername">${data.dbname.toUpperCase()}</h3></td>
+            <td><h3 class = "pername">${data.dbname}</h3></td>
             <td><p class = "perid">${data.did}</p></td>
             <div class="con3">
             <td><h4 class = "percon">Contact :</h4></td>
@@ -276,8 +275,17 @@ onValue(collname, (snapshot)=>{
             <td><button data-id="${id}" class="deletebtn">Delete</button></td>
         </div> `;
             }
-        });
+            else{
+
+      Swal.fire({
+    title: "No Data Found",
+  icon: "info",
+  draggable: true
+});
+searchname.value = ''
     }
+        });
+    } 
 });
 });
 
